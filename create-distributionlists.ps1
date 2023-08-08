@@ -1,8 +1,6 @@
 #connect to the new office 365 tenant
 Connect-ExchangeOnline
 #specify what to append to alias
-$prepend = "dl"
-
 #import groups
 $groups = import-csv -path "C:\temp\ExportDGs.csv" 
 
@@ -16,18 +14,14 @@ foreach($group in $groups){
     else{
         $group.grouptype = "Distribution"
     }
-    #create new alias
-    $newalias = $prepend + $group.alias
-
     #convert sender authentication to be $true or $false 
     #create new DL
     if($group.requireSenderAuthenticationEnabled -eq "True"){
-        $dl = new-distributiongroup -name $group.DisplayName -alias $newalias -requireSenderAuthenticationEnabled $true -type $group.grouptype -PrimarySmtpAddress $group.PrimarySmtpAddress
+        $dl = new-distributiongroup -name $group.DisplayName -alias $group.alias -requireSenderAuthenticationEnabled $true -type $group.grouptype -PrimarySmtpAddress $group.PrimarySmtpAddress
 
     }
     else{
-        $dl = new-distributiongroup -name $group.DisplayName -alias $newalias -requireSenderAuthenticationEnabled $false -type $group.grouptype -PrimarySmtpAddress $group.PrimarySmtpAddress
-    
+        $dl = new-distributiongroup -name $group.DisplayName -alias $group.alias -requireSenderAuthenticationEnabled $false -type $group.grouptype -PrimarySmtpAddress $group.PrimarySmtpAddress
     }
 
     #split members into array
