@@ -8,7 +8,7 @@ $groups = import-csv -path "C:\temp\ExportDGs.csv"
 #loop through groups for creation
 foreach($group in $groups){
     #determine group type and create a new group
-    if($group.grouptype -contains "Security"){
+    if($group.grouptype -match "Security"){
         $group.grouptype = "Security"
     }
     else{
