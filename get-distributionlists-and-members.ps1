@@ -4,7 +4,8 @@ connect-exchangeonline
 $Csvfile = "C:\temp\ExportDGs.csv"
 
 # Get all distribution groups
-$Groups = Get-DistributionGroup -ResultSize Unlimited
+#$Groups = Get-DistributionGroup -ResultSize Unlimited
+$Groups = Get-DistributionGroup -ResultSize Unlimited | Where-Object {$_.IsDirsynced -eq "True"} 
 
 # Loop through distribution groups
 $Groups | ForEach-Object {
