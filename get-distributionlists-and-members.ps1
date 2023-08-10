@@ -4,7 +4,6 @@ connect-exchangeonline
 $Csvfile = "C:\temp\ExportDGs.csv"
 
 # Get all distribution groups
-#$Groups = Get-DistributionGroup -ResultSize Unlimited
 $Groups = Get-DistributionGroup -ResultSize Unlimited | Where-Object {$_.IsDirsynced -eq "True"} 
 
 # Loop through distribution groups
@@ -17,7 +16,7 @@ $Groups | ForEach-Object {
     $GroupType = $_.GroupType
     $RecipientType = $_.RecipientType
     $Members = Get-DistributionGroupMember $GroupDN -ResultSize Unlimited
-    $ManagedBy = $_.ManagedBy
+    $ManagedBy = (get-distributiongroup $_.PrimarySmtpAddress).ManagedBy
     $Alias = $_.Alias
     $HiddenFromAddressLists = $_.HiddenFromAddressListsEnabled
     $MemberJoinRestriction = $_.MemberJoinRestriction 
@@ -37,7 +36,7 @@ $Groups | ForEach-Object {
         RecipientType                      = $RecipientType
         Members                            = ($Members.Name -join ',')
         MembersPrimarySmtpAddress          = ($Members.PrimarySmtpAddress -join ',')
-        ManagedBy                          = $ManagedBy.Name
+        ManagedBy                          = ($ManagedBy -join ',')
         HiddenFromAddressLists             = $HiddenFromAddressLists
         MemberJoinRestriction              = $MemberJoinRestriction 
         MemberDepartRestriction            = $MemberDepartRestriction
