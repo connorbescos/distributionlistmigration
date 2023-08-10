@@ -36,7 +36,7 @@ foreach($group in $groups){
     }
 
     $managers = @()
-    $managers += (get-connectioninformation).UserPrincipalName[0]
+    #$managers += (get-connectioninformation).UserPrincipalName[0]
     $ManagedBy = $groups.ManagedBy -split ',' 
     #add managers to new dl
     foreach($manager in $ManagedBy){
