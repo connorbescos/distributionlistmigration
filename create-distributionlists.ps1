@@ -31,4 +31,11 @@ foreach($group in $groups){
         get-mailbox -Identity $member
         add-distributiongroupmember -identity $dl -member $member
     }
+
+    $managers = @()
+    #add managers to new dl
+    foreach($manager in $ManagedBy){
+        $managers += get-mailbox -Identity $manager 
+        }
+    set-distributiongroup -identity $dl -managedby $managers.primarysmtpaddress
 }
