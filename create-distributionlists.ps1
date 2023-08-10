@@ -1,12 +1,13 @@
 #connect to the new office 365 tenant
 Connect-ExchangeOnline
+
 #specify what to append to alias
 #import groups
 $groups = import-csv -path "C:\temp\ExportDGs.csv" 
 
-
 #loop through groups for creation
 foreach($group in $groups){
+
     #determine group type and create a new group
     if($group.grouptype -match "Security"){
         $group.grouptype = "Security"
@@ -14,6 +15,7 @@ foreach($group in $groups){
     else{
         $group.grouptype = "Distribution"
     }
+
     #convert sender authentication to be $true or $false 
     #create new DL
     if($group.requireSenderAuthenticationEnabled -eq "True"){
@@ -26,6 +28,7 @@ foreach($group in $groups){
 
     #split members into array
     $members = $group.MembersPrimarySmtpAddress.split(",")
+
     #add members to new DL
     foreach($member in $members){
         get-mailbox -Identity $member
@@ -33,9 +36,12 @@ foreach($group in $groups){
     }
 
     $managers = @()
+    $managers += (get-connectioninformation).UserPrincipalName[0]
+    $ManagedBy = $groups.ManagedBy -split ',' 
     #add managers to new dl
     foreach($manager in $ManagedBy){
-        $managers += get-mailbox -Identity $manager 
+        $managers += (get-mailbox -Identity $manager).primarysmtpaddress 
         }
-    set-distributiongroup -identity $dl -managedby $managers.primarysmtpaddress
+    set-distributiongroup -identity $dl -managedby $managers
 }
+
