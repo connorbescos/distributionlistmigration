@@ -35,13 +35,13 @@ foreach($group in $groups){
         try {
             # Try to get the mailbox and add it to the distribution group
             get-mailbox -Identity $member | Out-Null
-            add-distributiongroupmember -identity $dl.exchangeguid -member $member
+            add-distributiongroupmember -identity $dl.ExchangeObjectId -member $member
         }
         catch {
             # If the above fails, try to add the member as a distribution group
             try {
                 $distGroupGuid = (Get-DistributionGroup $member).guid
-                add-distributiongroupmember -identity $dl.exchangeguid -member $distGroupGuid
+                add-distributiongroupmember -identity $dl.ExchangeObjectId -member $distGroupGuid.guid
             }
             catch {
                 Write-Output "Failed to add $member as a mailbox or a distribution group."
@@ -56,6 +56,5 @@ foreach($group in $groups){
     foreach($manager in $ManagedBy){
         $managers += (get-mailbox -Identity $manager).primarysmtpaddress 
         }
-    set-distributiongroup -identity $dl.exchangeguid -managedby $managers
+    set-distributiongroup -identity $dl.ExchangeObjectId -managedby $managers
 }
-
