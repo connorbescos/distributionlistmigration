@@ -32,7 +32,7 @@ foreach($group in $groups){
     #add members to new DL
     foreach($member in $members){
         get-mailbox -Identity $member
-        add-distributiongroupmember -identity $dl -member $member
+        add-distributiongroupmember -identity $dl.exchangeguid -member $member
     }
 
     $managers = @()
@@ -42,6 +42,6 @@ foreach($group in $groups){
     foreach($manager in $ManagedBy){
         $managers += (get-mailbox -Identity $manager).primarysmtpaddress 
         }
-    set-distributiongroup -identity $dl -managedby $managers
+    set-distributiongroup -identity $dl.exchangeguid -managedby $managers
 }
 
