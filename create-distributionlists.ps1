@@ -30,9 +30,23 @@ foreach($group in $groups){
     $members = $group.MembersPrimarySmtpAddress.split(",")
 
     #add members to new DL
+#add members to new DL
     foreach($member in $members){
-        get-mailbox -Identity $member
-        add-distributiongroupmember -identity $dl.exchangeguid -member $member
+        try {
+            # Try to get the mailbox and add it to the distribution group
+            get-mailbox -Identity $member | Out-Null
+            add-distributiongroupmember -identity $dl.exchangeguid -member $member
+        }
+        catch {
+            # If the above fails, try to add the member as a distribution group
+            try {
+                $distGroupGuid = (Get-DistributionGroup $member).guid
+                add-distributiongroupmember -identity $dl.exchangeguid -member $distGroupGuid
+            }
+            catch {
+                Write-Output "Failed to add $member as a mailbox or a distribution group."
+            }
+        }
     }
 
     $managers = @()
