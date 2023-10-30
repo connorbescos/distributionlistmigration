@@ -51,7 +51,7 @@ foreach($group in $groups){
 
     $managers = @()
     #$managers += (get-connectioninformation).UserPrincipalName[0]
-    $ManagedBy = $groups.ManagedBy -split ',' 
+    $ManagedBy = $group.ManagedBy -split ',' 
     #add managers to new dl
     foreach($manager in $ManagedBy){
         $managers += (get-mailbox -Identity $manager).primarysmtpaddress 
